@@ -16,7 +16,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Force light mode
+# Force light mode and fix input styling
 st.markdown("""
 <style>
     .stApp {
@@ -37,6 +37,27 @@ st.markdown("""
     }
     [data-testid="stSidebar"] {
         background-color: #F0F2F6;
+    }
+    
+    /* Fix input fields */
+    .stTextInput > div > div > input {
+        background-color: #FFFFFF;
+        color: #262730;
+        border: 1px solid #d1d5db;
+    }
+    
+    /* Fix text areas and other inputs */
+    .stTextArea > div > div > textarea,
+    .stSelectbox > div > div > div,
+    .stNumberInput > div > div > input {
+        background-color: #FFFFFF;
+        color: #262730;
+        border: 1px solid #d1d5db;
+    }
+    
+    /* Fix plotly chart container background only */
+    [data-testid="stPlotlyChart"] {
+        background-color: #FFFFFF;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -509,23 +530,24 @@ def show_survey_form():
             div[data-testid="stRadio"][data-baseweb="radio"] > div {{
                 display: flex;
                 flex-direction: row;
-                gap: 15px;
-                justify-content: center;
+                gap: 12px;
+                justify-content: space-between;
                 align-items: stretch;
                 margin: 1rem 0;
+                width: 100%;
             }}
             div[data-testid="stRadio"] > div > label {{
-                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                color: #495057;
-                border: 2px solid #dee2e6;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+                color: #495057 !important;
+                border: 2px solid #dee2e6 !important;
                 border-radius: 15px;
-                padding: 0.8rem 1.2rem;
+                padding: 0.8rem 0.5rem;
                 font-weight: 600;
                 font-size: 1rem;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
                 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 min-height: 60px;
-                min-width: 100px;
+                flex: 1;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -535,9 +557,9 @@ def show_survey_form():
                 white-space: nowrap;
             }}
             div[data-testid="stRadio"] > div > label:hover {{
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                border-color: #667eea;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                color: white !important;
+                border-color: #667eea !important;
                 transform: translateY(-3px);
                 box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
             }}
@@ -743,6 +765,12 @@ def show_results_page():
                 names="level",
                 title="Maturity Level Distribution",
                 color_discrete_sequence=px.colors.qualitative.Set3,
+            )
+            fig_pie.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+                plot_bgcolor='rgba(0,0,0,0)',   # Transparent plot background
+                font=dict(color='black'),        # Black text
+                title_font_color='black'         # Black title
             )
             st.plotly_chart(fig_pie, use_container_width=True)
 
