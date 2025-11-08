@@ -484,24 +484,26 @@ def show_survey_form():
             div[data-testid="stRadio"][data-baseweb="radio"] > div {{
                 display: flex;
                 flex-direction: row;
-                gap: 12px;
+                gap: 8px;
                 justify-content: space-between;
                 align-items: stretch;
                 margin: 1rem 0;
                 width: 100%;
+                flex-wrap: nowrap;
             }}
             div[data-testid="stRadio"] > div > label {{
                 background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                 color: #495057;
                 border: 2px solid #dee2e6;
-                border-radius: 15px;
-                padding: 0.8rem 0.5rem;
+                border-radius: 12px;
+                padding: 0.8rem 0.3rem;
                 font-weight: 600;
-                font-size: 1rem;
+                font-size: 0.95rem;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
                 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 min-height: 60px;
                 flex: 1;
+                min-width: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -509,6 +511,8 @@ def show_survey_form():
                 cursor: pointer;
                 position: relative;
                 white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }}
             div[data-testid="stRadio"] > div > label:hover {{
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -517,29 +521,52 @@ def show_survey_form():
                 transform: translateY(-3px);
                 box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
             }}
-            div[data-testid="stRadio"] > div > label[data-checked="true"] {{
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                border-color: #667eea;
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            /* Multiple selectors for selected state to ensure persistence */
+            div[data-testid="stRadio"] > div > label[data-checked="true"],
+            div[data-testid="stRadio"] > div > label:has(input[type="radio"]:checked),
+            div[data-testid="stRadio"] > div > label[aria-checked="true"] {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                color: white !important;
+                border-color: #667eea !important;
+                transform: translateY(-2px) !important;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
             }}
             div[data-testid="stRadio"] input[type="radio"] {{
                 display: none;
             }}
-            /* Add a subtle glow effect for selected buttons */
-            div[data-testid="stRadio"] > div > label[data-checked="true"]::before {{
-                content: '';
-                position: absolute;
-                top: -2px;
-                left: -2px;
-                right: -2px;
-                bottom: -2px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                border-radius: 17px;
-                z-index: -1;
-                opacity: 0.6;
-                filter: blur(4px);
+            div[data-testid="stRadio"] input[type="radio"]:checked + label,
+            div[data-testid="stRadio"] input[type="radio"]:checked ~ label {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                color: white !important;
+                border-color: #667eea !important;
+                transform: translateY(-2px) !important;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+            }}
+            
+            /* Mobile responsive design */
+            @media (max-width: 768px) {{
+                div[data-testid="stRadio"][data-baseweb="radio"] > div {{
+                    gap: 4px;
+                }}
+                div[data-testid="stRadio"] > div > label {{
+                    padding: 0.6rem 0.2rem;
+                    font-size: 0.85rem;
+                    min-height: 50px;
+                    border-radius: 10px;
+                }}
+            }}
+            
+            /* Extra small screens */
+            @media (max-width: 480px) {{
+                div[data-testid="stRadio"][data-baseweb="radio"] > div {{
+                    gap: 2px;
+                }}
+                div[data-testid="stRadio"] > div > label {{
+                    padding: 0.5rem 0.1rem;
+                    font-size: 0.8rem;
+                    min-height: 45px;
+                    border-radius: 8px;
+                }}
             }}
             </style>
         """,
