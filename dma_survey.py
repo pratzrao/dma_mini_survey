@@ -6,6 +6,7 @@ from datetime import datetime
 import libsql_experimental as libsql
 import time
 from streamlit_autorefresh import st_autorefresh
+from streamlit_scroll_to_top import scroll_to_here
 
 # Page configuration
 st.set_page_config(
@@ -114,8 +115,6 @@ def submit_dma_survey(name, organisation, address, email, contact_number, scores
         return None, None, None
 
 
-
-
 # Remove any caching to ensure real-time data
 def get_dma_survey_analytics():
     """Get analytics data for DMA survey results."""
@@ -195,8 +194,6 @@ def get_dma_survey_analytics():
             "maturity_distribution": [],
             "recent_responses": [],
         }
-
-
 
 
 # Custom CSS for styling
@@ -341,6 +338,13 @@ st.markdown(
         transform: translateY(-3px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
     }
+    .selected-button button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+        border-color: #667eea !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+    }
     .real-time-indicator {
         position: fixed;
         top: 10px;
@@ -387,13 +391,19 @@ if "user_score" not in st.session_state:
     st.session_state.user_score = None
 if "user_level" not in st.session_state:
     st.session_state.user_level = None
+if "scroll_to_top" not in st.session_state:
+    st.session_state.scroll_to_top = False
 
 
 def show_survey_form():
     """Display the main survey form."""
-    st.markdown('<div class="main-header">DMA Survey</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div class="sub-header">Data Maturity Assessment</div>', unsafe_allow_html=True
+        '<div class="main-header">Data Maturity Assessment</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="sub-header">Take the Mini DMA Survey!</div>',
+        unsafe_allow_html=True,
     )
 
     # Personal Information Section
@@ -408,25 +418,25 @@ def show_survey_form():
     # Survey Questions
     st.markdown("### Assessment Questions")
     st.markdown(
-        '<p style="text-align: center; color: #666; font-style: italic; margin-bottom: 2rem;">Rate each question on a scale of 1 to 5</p>',
+        '<p style="text-align: left; color: #666; font-style: italic; margin-bottom: 2rem;">Please rate each statement based on your organisation\'s current practices</p>',
         unsafe_allow_html=True,
     )
 
     questions = [
         {
-            "text": "To what extent is data considered an organisational priority and importance, currently?",
+            "text": "On a scale of 1 - 5: To what extent is data considered an organisational priority and importance, currently?",
         },
         {
-            "text": "To what extent does your organisation currently employ or engage individuals with data analysis or data science expertise?"
+            "text": "On a scale of 1 - 5: To what extent does your organisation currently employ or engage individuals with data analysis or data science expertise?"
         },
         {
-            "text": "To what extent is data used for internal learning, evaluation, and to identify needs and problems?",
+            "text": "On a scale of 1 - 5: To what extent is data used for internal learning, evaluation, and to identify needs and problems?",
         },
         {
-            "text": "To what extent do employees in your organisation discuss topics related to data (both project and administrative data) with their peers and senior management?",
+            "text": "On a scale of 1 - 5: To what extent do employees in your organisation discuss topics related to data (both project and administrative data) with their peers and senior management?",
         },
         {
-            "text": "To what extent are leaders willing to invest resources (time, money, effort) into data-driven practices and solutions?",
+            "text": "On a scale of 1 - 5: To what extent are leaders willing to invest resources (time, money, effort) into data-driven practices and solutions?",
         },
     ]
 
@@ -451,9 +461,10 @@ def show_survey_form():
             </h4>
             <p style="
                 color: #34495e;
-                font-size: 1rem;
+                font-size: 1.3rem;
                 line-height: 1.6;
                 margin-bottom: 1.5rem;
+                font-weight: 500;
             ">
                 {question['text']}
             </p>
@@ -466,34 +477,100 @@ def show_survey_form():
         # Rating scale with custom styling
         st.markdown('<div style="margin-top: 1rem;">', unsafe_allow_html=True)
 
-        # Create custom rating buttons
-        cols = st.columns(5)
-        score_labels = [
-            "",
-            "",
-            "",
-            "",
-            "",
-        ]
+        # Add custom CSS for radio buttons to look like elegant buttons
+        st.markdown(
+            f"""
+            <style>
+            div[data-testid="stRadio"][data-baseweb="radio"] > div {{
+                display: flex;
+                flex-direction: row;
+                gap: 12px;
+                justify-content: space-between;
+                align-items: stretch;
+                margin: 1rem 0;
+                width: 100%;
+            }}
+            div[data-testid="stRadio"] > div > label {{
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                color: #495057;
+                border: 2px solid #dee2e6;
+                border-radius: 15px;
+                padding: 0.8rem 0.5rem;
+                font-weight: 600;
+                font-size: 1rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                min-height: 60px;
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                cursor: pointer;
+                position: relative;
+                white-space: nowrap;
+            }}
+            div[data-testid="stRadio"] > div > label:hover {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-color: #667eea;
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+            }}
+            div[data-testid="stRadio"] > div > label[data-checked="true"] {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-color: #667eea;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            }}
+            div[data-testid="stRadio"] input[type="radio"] {{
+                display: none;
+            }}
+            /* Add a subtle glow effect for selected buttons */
+            div[data-testid="stRadio"] > div > label[data-checked="true"]::before {{
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 17px;
+                z-index: -1;
+                opacity: 0.6;
+                filter: blur(4px);
+            }}
+            </style>
+        """,
+            unsafe_allow_html=True,
+        )
 
-        for col, score, label in zip(cols, [1, 2, 3, 4, 5], score_labels):
-            with col:
-                if st.button(
-                    f"{score}\n{label}",
-                    key=f"q{i}_btn_{score}",
-                    use_container_width=True,
-                    help=f"Rate {score} out of 5 - {label}",
-                ):
-                    st.session_state[f"q{i}_selected"] = score
+        # Use radio buttons with custom styling for persistent selection
+        options = ["1 - Rarely", "2", "3", "4", "5 - Highly"]
 
-        # Get the selected score or default to 1
-        scores[f"q{i}"] = st.session_state.get(f"q{i}_selected", 1)
+        # Get current selection index (0-based for radio, but store 1-based score)
+        current_selection = st.session_state.get(f"q{i}_selected", 1) - 1
+
+        selected_index = st.radio(
+            "",
+            options=range(5),
+            format_func=lambda x: options[x],
+            index=current_selection,
+            key=f"q{i}_radio",
+            horizontal=True,
+            label_visibility="collapsed",
+        )
+
+        # Store the 1-based score in session state
+        st.session_state[f"q{i}_selected"] = selected_index + 1
+        scores[f"q{i}"] = selected_index + 1
 
         # Show selected score
         if f"q{i}_selected" in st.session_state:
             selected = st.session_state[f"q{i}_selected"]
             st.markdown(
-                f'<p style="text-align: center; margin-top: 1rem; font-weight: bold; color: #667eea;">Selected: {selected}/5 - {score_labels[selected-1]}</p>',
+                f'<p style="text-align: center; margin-top: 1rem; font-weight: bold; color: #667eea;">Selected: {options[selected-1]}</p>',
                 unsafe_allow_html=True,
             )
         else:
@@ -545,6 +622,9 @@ def show_survey_form():
 
                 st.session_state.user_org = organisation
                 st.session_state.page = "results"
+                st.session_state.scroll_to_top = (
+                    True  # Trigger scroll on next page load
+                )
                 st.rerun()
             else:
                 st.error("Error submitting survey. Please try again.")
@@ -553,10 +633,13 @@ def show_survey_form():
 def show_results_page():
     """Display individual results and analytics."""
 
+    # Scroll to top using the component if triggered
+    if st.session_state.scroll_to_top:
+        scroll_to_here(0, key="top_of_results")  # Scroll to page top
+        st.session_state.scroll_to_top = False  # Reset state
+
     # Add auto-refresh to results page too
     st_autorefresh(interval=3000, key="results_refresh")
-
-    # Removed anchor - using native scroll component instead
 
     # Real-time indicator
     st.markdown(
@@ -581,7 +664,7 @@ def show_results_page():
 
     st.markdown("**Scoring Rubric:**")
     scoring_rubric = {
-        "Beginner Level (5 points)": "Minimal prioritisation of data. Data is rarely seen as an organisational priority, hardly discussed in teams, and leadership shows little willingness to invest. Data-related skills are absent, and analytical work is handled manually or intuitively.",
+        "Beginner Level (0-5 points)": "Minimal prioritisation of data. Data is rarely seen as an organisational priority, hardly discussed in teams, and leadership shows little willingness to invest. Data-related skills are absent, and analytical work is handled manually or intuitively.",
         "Emerging Level (6-10 points)": "Data is acknowledged but inconsistently valued. Data may be rated as important but discussions are occasional and adoption is partial. Leaders begin to recognise data's role but investments remain tentative. Data exposure is low, existing through ad hoc engagements lacks strategy or structure for sustained skill development.",
         "Progressing Level (11-15 points)": "Growing acceptance of data. Data is discussed more frequently, and used for learning and evaluation. Leadership commitment starts translating into structured practices. Some internal capacity exists, supported by periodic external inputs.",
         "Advanced Level (16-20 points)": "Strong data-driven mindset. The data culture supports systematic use across teams. Dedicated data staff and structured collaborations reflect a maturing system. Employees regularly discuss data, leaders actively invest resources, and data is embedded in decision-making and problem identification.",
@@ -596,7 +679,6 @@ def show_results_page():
 
     st.markdown("---")
 
-
     # Analytics section
     st.markdown("---")
 
@@ -610,20 +692,26 @@ def show_results_page():
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown(f'''
+            st.markdown(
+                f"""
             <div class="metric-card">
                 <div class="metric-label">Total Responses</div>
                 <div class="metric-value">{analytics["stats"]["total_responses"]}</div>
             </div>
-            ''', unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
         with col2:
-            st.markdown(f'''
+            st.markdown(
+                f"""
             <div class="metric-card">
                 <div class="metric-label">Average Score</div>
                 <div class="metric-value">{analytics["stats"]["avg_score"]}/25</div>
             </div>
-            ''', unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
         # Charts
         if analytics["maturity_distribution"]:
@@ -637,17 +725,10 @@ def show_results_page():
             )
             st.plotly_chart(fig_pie, use_container_width=True)
 
-
-
-
     else:
         st.info(
             "You are the first participant! More analytics will be available as others complete the survey."
         )
-
-
-
-
 
 
 # Main app logic
