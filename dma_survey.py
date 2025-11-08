@@ -484,7 +484,7 @@ def show_survey_form():
             div[data-testid="stRadio"][data-baseweb="radio"] > div {{
                 display: flex;
                 flex-direction: row;
-                gap: 8px;
+                gap: 12px;
                 justify-content: space-between;
                 align-items: stretch;
                 margin: 1rem 0;
@@ -495,10 +495,10 @@ def show_survey_form():
                 background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                 color: #495057;
                 border: 2px solid #dee2e6;
-                border-radius: 12px;
-                padding: 0.8rem 0.3rem;
+                border-radius: 15px;
+                padding: 0.8rem 0.5rem;
                 font-weight: 600;
-                font-size: 0.95rem;
+                font-size: 1rem;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
                 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 min-height: 60px;
@@ -511,8 +511,6 @@ def show_survey_form():
                 cursor: pointer;
                 position: relative;
                 white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
             }}
             div[data-testid="stRadio"] > div > label:hover {{
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -543,34 +541,20 @@ def show_survey_form():
                 box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
             }}
             
-            /* Mobile responsive design - stack vertically */
+            /* Mobile responsive design - only fix alignment, keep horizontal */
             @media (max-width: 768px) {{
-                div[data-testid="stRadio"][data-baseweb="radio"] > div {{
-                    flex-direction: column;
-                    gap: 10px;
-                    align-items: stretch;
-                }}
                 div[data-testid="stRadio"] > div > label {{
-                    padding: 1rem;
-                    font-size: 1rem;
-                    min-height: 50px;
-                    border-radius: 12px;
-                    width: 100%;
-                    flex: none;
-                    text-align: center;
+                    font-size: 0.9rem;
+                    padding: 0.7rem 0.3rem;
                 }}
             }}
             
-            /* Extra small screens - keep vertical but adjust sizing */
+            /* Extra small screens - make font even smaller to fit */
             @media (max-width: 480px) {{
-                div[data-testid="stRadio"][data-baseweb="radio"] > div {{
-                    gap: 8px;
-                }}
                 div[data-testid="stRadio"] > div > label {{
-                    padding: 0.8rem;
-                    font-size: 0.95rem;
-                    min-height: 45px;
-                    border-radius: 10px;
+                    font-size: 0.8rem;
+                    padding: 0.6rem 0.2rem;
+                    min-height: 50px;
                 }}
             }}
             </style>
