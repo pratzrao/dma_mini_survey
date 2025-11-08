@@ -543,29 +543,34 @@ def show_survey_form():
                 box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
             }}
             
-            /* Mobile responsive design */
+            /* Mobile responsive design - stack vertically */
             @media (max-width: 768px) {{
                 div[data-testid="stRadio"][data-baseweb="radio"] > div {{
-                    gap: 4px;
+                    flex-direction: column;
+                    gap: 10px;
+                    align-items: stretch;
                 }}
                 div[data-testid="stRadio"] > div > label {{
-                    padding: 0.6rem 0.2rem;
-                    font-size: 0.85rem;
+                    padding: 1rem;
+                    font-size: 1rem;
                     min-height: 50px;
-                    border-radius: 10px;
+                    border-radius: 12px;
+                    width: 100%;
+                    flex: none;
+                    text-align: center;
                 }}
             }}
             
-            /* Extra small screens */
+            /* Extra small screens - keep vertical but adjust sizing */
             @media (max-width: 480px) {{
                 div[data-testid="stRadio"][data-baseweb="radio"] > div {{
-                    gap: 2px;
+                    gap: 8px;
                 }}
                 div[data-testid="stRadio"] > div > label {{
-                    padding: 0.5rem 0.1rem;
-                    font-size: 0.8rem;
+                    padding: 0.8rem;
+                    font-size: 0.95rem;
                     min-height: 45px;
-                    border-radius: 8px;
+                    border-radius: 10px;
                 }}
             }}
             </style>
