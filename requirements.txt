@@ -3,3 +3,4 @@ pandas
 plotly
 libsql-experimental
 streamlit-autorefresh
+streamlit-scroll-to-top
