@@ -16,6 +16,31 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# Force light mode
+st.markdown("""
+<style>
+    .stApp {
+        color: #262730;
+        background-color: #FFFFFF;
+    }
+    .stApp > header {
+        background-color: transparent;
+    }
+    .stApp > .main {
+        background-color: #FFFFFF;
+    }
+    [data-testid="stHeader"] {
+        background-color: #FFFFFF;
+    }
+    [data-testid="stToolbar"] {
+        background-color: #FFFFFF;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #F0F2F6;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 
 # Database connection
 @st.cache_resource
@@ -484,26 +509,23 @@ def show_survey_form():
             div[data-testid="stRadio"][data-baseweb="radio"] > div {{
                 display: flex;
                 flex-direction: row;
-                gap: 12px;
-                justify-content: space-between;
+                gap: 15px;
+                justify-content: center;
                 align-items: stretch;
                 margin: 1rem 0;
-                width: 100%;
-                flex-wrap: nowrap;
             }}
             div[data-testid="stRadio"] > div > label {{
                 background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                 color: #495057;
                 border: 2px solid #dee2e6;
                 border-radius: 15px;
-                padding: 0.8rem 0.5rem;
+                padding: 0.8rem 1.2rem;
                 font-weight: 600;
                 font-size: 1rem;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
                 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 min-height: 60px;
-                flex: 1;
-                min-width: 0;
+                min-width: 100px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -539,23 +561,6 @@ def show_survey_form():
                 border-color: #667eea !important;
                 transform: translateY(-2px) !important;
                 box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
-            }}
-            
-            /* Mobile responsive design - only fix alignment, keep horizontal */
-            @media (max-width: 768px) {{
-                div[data-testid="stRadio"] > div > label {{
-                    font-size: 0.9rem;
-                    padding: 0.7rem 0.3rem;
-                }}
-            }}
-            
-            /* Extra small screens - make font even smaller to fit */
-            @media (max-width: 480px) {{
-                div[data-testid="stRadio"] > div > label {{
-                    font-size: 0.8rem;
-                    padding: 0.6rem 0.2rem;
-                    min-height: 50px;
-                }}
             }}
             </style>
         """,
