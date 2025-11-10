@@ -523,89 +523,54 @@ def show_survey_form():
         # Rating scale with custom styling
         st.markdown('<div style="margin-top: 1rem;">', unsafe_allow_html=True)
 
-        # MAXIMUM specificity CSS for Streamlit Cloud compatibility
+        # Simple CSS that works - back to basics
         st.markdown(
             f"""
             <style>
-            /* EXTREME specificity for Streamlit Cloud - Question {i} */
-            .stApp .main .block-container div[data-testid="stRadio"][data-baseweb="radio"] > div,
-            body div.stApp div[data-testid="stRadio"] > div,
-            html body .stApp div[data-testid="stRadio"] > div {{
-                display: flex !important;
-                flex-direction: row !important;
-                gap: 10px !important;
-                justify-content: space-between !important;
-                align-items: stretch !important;
-                margin: 1rem 0 !important;
-                width: 100% !important;
-                flex-wrap: nowrap !important;
+            div[data-testid="stRadio"] > div {{
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                align-items: stretch;
+                margin: 1rem 0;
             }}
-            
-            /* Ultra-high specificity for button styling */
-            .stApp .main .block-container div[data-testid="stRadio"] > div > label,
-            body div.stApp div[data-testid="stRadio"] > div > label,
-            html body .stApp div[data-testid="stRadio"] > div > label,
-            .stApp div[data-testid="stRadio"] > div > label,
-            .stApp div[data-testid="stRadio"] label,
-            div[data-testid="stRadio"] div label {{
-                all: unset !important;
-                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-                color: #495057 !important;
-                border: 2px solid #dee2e6 !important;
-                border-radius: 15px !important;
-                padding: 0.8rem 0.5rem !important;
-                font-weight: 600 !important;
-                font-size: 1rem !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                min-height: 60px !important;
-                flex: 1 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                text-align: center !important;
-                cursor: pointer !important;
-                position: relative !important;
-                white-space: nowrap !important;
-                min-width: 0 !important;
-                box-sizing: border-box !important;
-                font-family: inherit !important;
+            div[data-testid="stRadio"] > div > label {{
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                color: #495057;
+                border: 2px solid #dee2e6;
+                border-radius: 15px;
+                padding: 0.8rem 1.2rem;
+                font-weight: 600;
+                font-size: 1rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                min-height: 60px;
+                min-width: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                cursor: pointer;
+                position: relative;
+                white-space: nowrap;
             }}
-            
-            /* Hover states with maximum specificity */
-            .stApp .main .block-container div[data-testid="stRadio"] > div > label:hover,
-            body div.stApp div[data-testid="stRadio"] > div > label:hover,
-            html body .stApp div[data-testid="stRadio"] > div > label:hover {{
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-                color: white !important;
-                border-color: #667eea !important;
-                transform: translateY(-3px) !important;
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25) !important;
+            div[data-testid="stRadio"] > div > label:hover {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-color: #667eea;
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
             }}
-            
-            /* Selected states with maximum specificity */
-            .stApp .main .block-container div[data-testid="stRadio"] > div > label[data-checked="true"],
-            body div.stApp div[data-testid="stRadio"] > div > label[data-checked="true"],
-            html body .stApp div[data-testid="stRadio"] > div > label[data-checked="true"],
-            .stApp div[data-testid="stRadio"] > div > label[data-checked="true"],
-            .stApp div[data-testid="stRadio"] > div > label:has(input[type="radio"]:checked),
-            .stApp div[data-testid="stRadio"] > div > label[aria-checked="true"],
-            .stApp div[data-testid="stRadio"] input[type="radio"]:checked + label,
-            .stApp div[data-testid="stRadio"] input[type="radio"]:checked ~ label {{
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-                color: white !important;
-                border-color: #667eea !important;
-                transform: translateY(-2px) !important;
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+            div[data-testid="stRadio"] > div > label[data-checked="true"],
+            div[data-testid="stRadio"] input[type="radio"]:checked + label {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-color: #667eea;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
             }}
-            
-            /* Hide radio inputs completely */
-            .stApp div[data-testid="stRadio"] input[type="radio"],
-            .stApp div[data-testid="stRadio"] > div input[type="radio"] {{
-                display: none !important;
-                opacity: 0 !important;
-                position: absolute !important;
-                left: -9999px !important;
+            div[data-testid="stRadio"] input[type="radio"] {{
+                display: none;
             }}
             </style>
         """,
