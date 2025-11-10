@@ -527,62 +527,63 @@ def show_survey_form():
         st.markdown(
             f"""
             <style>
-            div[data-testid="stRadio"][data-baseweb="radio"] > div {{
-                display: flex;
-                flex-direction: row;
-                gap: 12px;
-                justify-content: space-between;
-                align-items: stretch;
-                margin: 1rem 0;
-                width: 100%;
+            /* Higher specificity selectors for Streamlit Cloud */
+            .stApp div[data-testid="stRadio"][data-baseweb="radio"] > div {{
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 12px !important;
+                justify-content: space-between !important;
+                align-items: stretch !important;
+                margin: 1rem 0 !important;
+                width: 100% !important;
+                flex-wrap: nowrap !important;
             }}
-            div[data-testid="stRadio"] > div > label {{
+            .stApp div[data-testid="stRadio"] > div > label,
+            .stApp div[data-testid="stRadio"] label,
+            div[data-testid="stRadio"] div label {{
                 background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
                 color: #495057 !important;
                 border: 2px solid #dee2e6 !important;
-                border-radius: 15px;
-                padding: 0.8rem 0.5rem;
-                font-weight: 600;
-                font-size: 1rem;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                min-height: 60px;
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                cursor: pointer;
-                position: relative;
-                white-space: nowrap;
+                border-radius: 15px !important;
+                padding: 0.8rem 0.5rem !important;
+                font-weight: 600 !important;
+                font-size: 1rem !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                min-height: 60px !important;
+                flex: 1 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                cursor: pointer !important;
+                position: relative !important;
+                white-space: nowrap !important;
+                min-width: 0 !important;
             }}
-            div[data-testid="stRadio"] > div > label:hover {{
+            .stApp div[data-testid="stRadio"] > div > label:hover,
+            .stApp div[data-testid="stRadio"] label:hover {{
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
                 color: white !important;
                 border-color: #667eea !important;
-                transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+                transform: translateY(-3px) !important;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25) !important;
             }}
-            /* Multiple selectors for selected state to ensure persistence */
-            div[data-testid="stRadio"] > div > label[data-checked="true"],
-            div[data-testid="stRadio"] > div > label:has(input[type="radio"]:checked),
-            div[data-testid="stRadio"] > div > label[aria-checked="true"] {{
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-                color: white !important;
-                border-color: #667eea !important;
-                transform: translateY(-2px) !important;
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
-            }}
-            div[data-testid="stRadio"] input[type="radio"] {{
-                display: none;
-            }}
-            div[data-testid="stRadio"] input[type="radio"]:checked + label,
-            div[data-testid="stRadio"] input[type="radio"]:checked ~ label {{
+            /* Multiple high-specificity selectors for selected state */
+            .stApp div[data-testid="stRadio"] > div > label[data-checked="true"],
+            .stApp div[data-testid="stRadio"] > div > label:has(input[type="radio"]:checked),
+            .stApp div[data-testid="stRadio"] > div > label[aria-checked="true"],
+            .stApp div[data-testid="stRadio"] label[data-checked="true"],
+            .stApp div[data-testid="stRadio"] input[type="radio"]:checked + label,
+            .stApp div[data-testid="stRadio"] input[type="radio"]:checked ~ label {{
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
                 color: white !important;
                 border-color: #667eea !important;
                 transform: translateY(-2px) !important;
                 box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+            }}
+            .stApp div[data-testid="stRadio"] input[type="radio"] {{
+                display: none !important;
             }}
             </style>
         """,
@@ -596,13 +597,13 @@ def show_survey_form():
         current_selection = st.session_state.get(f"q{i}_selected", 1) - 1
 
         selected_index = st.radio(
-            "",
+            label="Rating",
             options=range(5),
             format_func=lambda x: options[x],
             index=current_selection,
             key=f"q{i}_radio",
             horizontal=True,
-            label_visibility="collapsed",
+            label_visibility="hidden",
         )
 
         # Store the 1-based score in session state
@@ -622,7 +623,6 @@ def show_survey_form():
                 unsafe_allow_html=True,
             )
 
-        st.markdown("</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     # Submit button with styling
@@ -681,8 +681,8 @@ def show_results_page():
         scroll_to_here(0, key="top_of_results")  # Scroll to page top
         st.session_state.scroll_to_top = False  # Reset state
 
-    # Add auto-refresh to results page too
-    st_autorefresh(interval=3000, key="results_refresh")
+    # Add auto-refresh to results page too (with debounce to reduce greying)
+    st_autorefresh(interval=5000, key="results_refresh", debounce=False)
 
     # Real-time indicator
     st.markdown(
@@ -726,7 +726,7 @@ def show_results_page():
     st.markdown("---")
 
     st.markdown("### Community Analytics")
-    st.caption("🟢 Live updates every 3 seconds")
+    st.caption("🟢 Live updates every 5 seconds")
 
     # Get analytics data (cached for performance)
     analytics = get_dma_survey_analytics()
