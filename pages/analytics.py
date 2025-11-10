@@ -15,12 +15,60 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# Force light mode and fix input styling
+st.markdown("""
+<style>
+    .stApp {
+        color: #262730;
+        background-color: #FFFFFF;
+    }
+    .stApp > header {
+        background-color: transparent;
+    }
+    .stApp > .main {
+        background-color: #FFFFFF;
+    }
+    [data-testid="stHeader"] {
+        background-color: #FFFFFF;
+    }
+    [data-testid="stToolbar"] {
+        background-color: #FFFFFF;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #F0F2F6;
+    }
+    
+    /* Fix input fields */
+    .stTextInput > div > div > input {
+        background-color: #FFFFFF;
+        color: #262730;
+        border: 1px solid #d1d5db;
+    }
+    
+    /* Fix text areas and other inputs */
+    .stTextArea > div > div > textarea,
+    .stSelectbox > div > div > div,
+    .stNumberInput > div > div > input {
+        background-color: #FFFFFF;
+        color: #262730;
+        border: 1px solid #d1d5db;
+    }
+    
+    /* Fix plotly chart container background only */
+    [data-testid="stPlotlyChart"] {
+        background-color: #FFFFFF;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
 # Database connection
 @st.cache_resource
 def get_connection():
     db_url = st.secrets["DB_URL"]
     auth_token = st.secrets["AUTH_TOKEN"]
     return libsql.connect(database=db_url, auth_token=auth_token)
+
 
 # Remove any caching to ensure real-time data
 def get_dma_survey_analytics():
@@ -102,6 +150,7 @@ def get_dma_survey_analytics():
             "recent_responses": [],
         }
 
+
 # Custom CSS for styling
 st.markdown(
     """
@@ -138,9 +187,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
 def show_analytics_page():
     """Display the community analytics page."""
-    st.markdown('<div class="main-header">Community Analytics</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="main-header">Community Analytics</div>', unsafe_allow_html=True
+    )
     st.caption("🟢 Live updates every 3 seconds")
 
     # Real-time auto-refresh using streamlit-autorefresh component
@@ -153,20 +205,26 @@ def show_analytics_page():
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown(f'''
+            st.markdown(
+                f"""
             <div class="metric-card">
                 <div class="metric-label">Total Responses</div>
                 <div class="metric-value">{analytics["stats"]["total_responses"]}</div>
             </div>
-            ''', unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
         with col2:
-            st.markdown(f'''
+            st.markdown(
+                f"""
             <div class="metric-card">
                 <div class="metric-label">Average Score</div>
                 <div class="metric-value">{analytics["stats"]["avg_score"]}/25</div>
             </div>
-            ''', unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
         # Charts
         if analytics["maturity_distribution"]:
@@ -178,11 +236,18 @@ def show_analytics_page():
                 title="Maturity Level Distribution",
                 color_discrete_sequence=px.colors.qualitative.Set3,
             )
+            fig_pie.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+                plot_bgcolor='rgba(0,0,0,0)',   # Transparent plot background
+                font=dict(color='black'),        # Black text
+                title_font_color='black'         # Black title
+            )
             st.plotly_chart(fig_pie, use_container_width=True)
     else:
         st.info(
             "No survey responses yet. More analytics will be available as users complete the survey."
         )
+
 
 show_analytics_page()
 
