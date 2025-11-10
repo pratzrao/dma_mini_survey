@@ -523,85 +523,53 @@ def show_survey_form():
         # Rating scale with custom styling
         st.markdown('<div style="margin-top: 1rem;">', unsafe_allow_html=True)
 
-        # Simple CSS that works - back to basics
-        st.markdown(
-            f"""
-            <style>
-            div[data-testid="stRadio"] > div {{
-                display: flex;
-                gap: 15px;
-                justify-content: center;
-                align-items: stretch;
-                margin: 1rem 0;
-            }}
-            div[data-testid="stRadio"] > div > label {{
-                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                color: #495057;
-                border: 2px solid #dee2e6;
-                border-radius: 15px;
-                padding: 0.8rem 1.2rem;
-                font-weight: 600;
-                font-size: 1rem;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                min-height: 60px;
-                min-width: 100px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                cursor: pointer;
-                position: relative;
-                white-space: nowrap;
-            }}
-            div[data-testid="stRadio"] > div > label:hover {{
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                border-color: #667eea;
-                transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
-            }}
-            div[data-testid="stRadio"] > div > label[data-checked="true"],
-            div[data-testid="stRadio"] input[type="radio"]:checked + label {{
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                border-color: #667eea;
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            }}
-            div[data-testid="stRadio"] input[type="radio"] {{
-                display: none;
-            }}
-            </style>
-        """,
-            unsafe_allow_html=True,
-        )
-
-        # Use radio buttons with custom styling for persistent selection
-        options = ["1 - Rarely", "2", "3", "4", "5 - Highly"]
-
-        # Get current selection index (0-based for radio, but store 1-based score)
-        current_selection = st.session_state.get(f"q{i}_selected", 1) - 1
-
-        selected_index = st.radio(
-            label="Rating",
-            options=range(5),
-            format_func=lambda x: options[x],
-            index=current_selection,
-            key=f"q{i}_radio",
-            horizontal=True,
-            label_visibility="hidden",
-        )
-
-        # Store the 1-based score in session state
-        st.session_state[f"q{i}_selected"] = selected_index + 1
-        scores[f"q{i}"] = selected_index + 1
+        # Back to reliable st.button approach with persistent selection styling
+        cols = st.columns(5)
+        score_labels = [
+            "1 - Rarely",
+            "2", 
+            "3",
+            "4",
+            "5 - Highly"
+        ]
+        
+        # Get current selection
+        current_selection = st.session_state.get(f"q{i}_selected", None)
+        
+        for col, score, label in zip(cols, [1, 2, 3, 4, 5], score_labels):
+            with col:
+                # Apply selected styling if this button is selected
+                if current_selection == score:
+                    # Selected button styling
+                    if st.button(
+                        label,
+                        key=f"q{i}_btn_{score}",
+                        use_container_width=True,
+                        help=f"Currently selected: {score} out of 5",
+                        type="primary"
+                    ):
+                        st.session_state[f"q{i}_selected"] = score
+                        st.rerun()
+                else:
+                    # Unselected button styling
+                    if st.button(
+                        label,
+                        key=f"q{i}_btn_{score}",
+                        use_container_width=True,
+                        help=f"Rate {score} out of 5",
+                        type="secondary"
+                    ):
+                        st.session_state[f"q{i}_selected"] = score
+                        st.rerun()
+        
+        # Set score for validation
+        scores[f"q{i}"] = st.session_state.get(f"q{i}_selected", 1)
 
         # Show selected score
         if f"q{i}_selected" in st.session_state:
             selected = st.session_state[f"q{i}_selected"]
             st.markdown(
-                f'<p style="text-align: center; margin-top: 1rem; font-weight: bold; color: #667eea;">Selected: {options[selected-1]}</p>',
+                f'<p style="text-align: center; margin-top: 1rem; font-weight: bold; color: #667eea;">Selected: {score_labels[selected-1]}</p>',
                 unsafe_allow_html=True,
             )
         else:
