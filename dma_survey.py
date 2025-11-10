@@ -59,6 +59,38 @@ st.markdown("""
     [data-testid="stPlotlyChart"] {
         background-color: #FFFFFF;
     }
+    
+    /* Force button colors to work in light mode */
+    .stButton > button {
+        color: #262730 !important;
+        background-color: #FFFFFF !important;
+        border: 1px solid #d1d5db !important;
+    }
+    
+    /* Force primary button colors */
+    .stButton > button[kind="primary"] {
+        background-color: #667eea !important;
+        color: white !important;
+        border-color: #667eea !important;
+    }
+    
+    /* Force secondary button colors */
+    .stButton > button[kind="secondary"] {
+        background-color: #f8f9fa !important;
+        color: #495057 !important;
+        border-color: #dee2e6 !important;
+    }
+    
+    /* Hover states */
+    .stButton > button:hover {
+        color: #262730 !important;
+        border-color: #667eea !important;
+    }
+    
+    .stButton > button[kind="primary"]:hover {
+        background-color: #5a6fd8 !important;
+        color: white !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
