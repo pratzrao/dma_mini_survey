@@ -9,14 +9,15 @@ from streamlit_autorefresh import st_autorefresh
 
 # Page configuration
 st.set_page_config(
-    page_title="DMA Survey - Community Analytics",
+    page_title="DMA Survey - Survey Analytics",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
 # Force light mode and fix input styling
-st.markdown("""
+st.markdown(
+    """
 <style>
     .stApp {
         color: #262730;
@@ -59,7 +60,9 @@ st.markdown("""
         background-color: #FFFFFF;
     }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 
 # Database connection
@@ -189,14 +192,14 @@ st.markdown(
 
 
 def show_analytics_page():
-    """Display the community analytics page."""
+    """Display the Survey analytics page."""
     st.markdown(
         '<div class="main-header">Community Analytics</div>', unsafe_allow_html=True
     )
-    st.caption("🟢 Live updates every 3 seconds")
+    st.caption("🟢 Live updates every 5 seconds")
 
-    # Real-time auto-refresh using streamlit-autorefresh component
-    st_autorefresh(interval=3000, key="dashboard_refresh")
+    # Real-time auto-refresh using streamlit-autorefresh component (with debounce to reduce greying)
+    st_autorefresh(interval=5000, key="dashboard_refresh", debounce=False)
 
     # Get analytics data (cached for performance)
     analytics = get_dma_survey_analytics()
@@ -237,10 +240,10 @@ def show_analytics_page():
                 color_discrete_sequence=px.colors.qualitative.Set3,
             )
             fig_pie.update_layout(
-                paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
-                plot_bgcolor='rgba(0,0,0,0)',   # Transparent plot background
-                font=dict(color='black'),        # Black text
-                title_font_color='black'         # Black title
+                paper_bgcolor="rgba(0,0,0,0)",  # Transparent background
+                plot_bgcolor="rgba(0,0,0,0)",  # Transparent plot background
+                font=dict(color="black"),  # Black text
+                title_font_color="black",  # Black title
             )
             st.plotly_chart(fig_pie, use_container_width=True)
     else:
